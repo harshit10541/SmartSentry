@@ -1,0 +1,19 @@
+# Virtual Environment
+venv/
+/venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Large Data Files (should be downloaded separately)
+data/
+
+# VSCode settings
+.vscode/
+
+# Docker
+.dockerignore
+
+# IDE files
+.idea/

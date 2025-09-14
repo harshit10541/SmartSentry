@@ -62,7 +62,8 @@ The RandomForestClassifier was selected as the final model due to its superior b
    cd \<your-repository-name\>
 
 2. Create a data directory  
-   In the root of the project folder, create a new folder named data.  
+   In the BakerHughesHackathon directory at theroot of the project folder, create a new folder named data.  
+   cd BakerHughesHackathon
    mkdir data
 
 3. **Download the Dataset**  

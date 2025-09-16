@@ -66,7 +66,7 @@ The RandomForestClassifier was selected as the final model due to its superior b
    * Go to the [**NASA Prognostics Center of Excellence Data Repository**](https://www.nasa.gov/intelligent-systems-division/discovery-and-systems-health/pcoe/pcoe-data-set-repository/).  
    * Find the **"Turbofan Engine Degradation Simulation Data Set"** and download the zip file (CMAPSSData.zip).  
    * Unzip the file. Inside, you will find several text files.  
-   * Copy the following three files into the data/ directory you just created:  
+   * Copy the following three files into the BakerHughesHackathon/data/ directory you just created:  
      * train\_FD001.txt  
      * test\_FD001.txt  
      * RUL\_FD001.txt  

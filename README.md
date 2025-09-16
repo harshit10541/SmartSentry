@@ -2,10 +2,6 @@
 
 A real-time anomaly detection system for industrial assets, developed for the Baker Hughes Hackathon 2025\. This project addresses the challenge of accurately detecting failures while minimizing false positives during transient operational phases like startup and shutdown.
 
-\<\!-- It is highly recommended to take a screenshot of your running dashboard, upload it to a site like imgur.com, and paste the direct image link here. \--\>
-
-\<\!-- Example: \--\>
-
 ## **1\. Project Overview**
 
 **Smart Sentry** solves a critical problem in predictive maintenance: standard monitoring systems often generate false alarms by misinterpreting the normal, volatile behavior of assets during **startup and shutdown phases**.
@@ -129,3 +125,95 @@ In your fourth terminal, run the producer script to begin streaming the NASA dat
 python producer.py
 
 You can now watch the dashboard in your browser update in real time as the data is processed.
+
+### **1\. Tech Stack**
+
+The project is built on a modern, robust technology stack designed for real-time machine learning applications. The components are containerized for portability and ease of deployment.
+
+* **Core Development & Machine Learning:**  
+  * **Python**: The primary programming language for all application logic.  
+  * **Scikit-learn**: The core library for training, evaluating, and deploying the machine learning models (RandomForestClassifier, LogisticRegression).  
+  * **Pandas & NumPy**: Used for all data manipulation, feature engineering, and numerical operations.  
+* **Data Streaming & Real-Time Communication:**  
+  * **Apache Kafka**: The high-throughput message bus for ingesting the simulated real-time sensor data stream.  
+  * **Redis**: A high-speed, in-memory message broker used for low-latency communication between the backend consumer and the frontend dashboard.  
+* **Database:**  
+  * **PostgreSQL**: A robust relational database for the persistent logging of all prediction results and system performance metrics.  
+* **Frontend & Visualization:**  
+  * **Streamlit**: The web application framework used to build the interactive, real-time user dashboard.  
+* **Infrastructure & Deployment:**  
+  * **Docker & Docker Compose**: Used to containerize and manage all the backend services (Kafka, PostgreSQL, Redis), ensuring a consistent and reproducible environment.
+
+---
+
+### **2\. Dependencies (requirements.txt)**
+
+To run this project, the following Python libraries must be installed in the virtual environment. These are listed in a format ready for a requirements.txt file.
+
+\# Core data science and ML  
+pandas  
+numpy  
+scikit-learn  
+joblib  
+imbalanced-learn  
+xgboost  
+seaborn  
+matplotlib
+
+\# Backend services and communication  
+kafka-python  
+psycopg2-binary  
+redis
+
+\# Frontend  
+streamlit
+
+---
+
+### **3\. Configuration Settings**
+
+The system's behavior is controlled by a set of configuration variables across different files.
+
+#### **3.1. Infrastructure (docker-compose.yml)**
+
+This file defines the services that run in Docker containers.
+
+* **Kafka Service:**  
+  * image: confluentinc/cp-kafka:latest \- The Docker image for the Kafka broker.  
+  * ports: "9092:9092" \- Maps port 9092 on the host machine to port 9092 in the container, allowing the Python scripts to connect.  
+  * environment: A set of variables that configure a modern, standalone Kafka instance without Zookeeper.  
+* **PostgreSQL Service:**  
+  * image: postgres:14-alpine \- A lightweight, official PostgreSQL image.  
+  * ports: "5432:5432" \- Maps the standard PostgreSQL port for external connections.  
+  * environment:  
+    * POSTGRES\_USER: user \- Sets the database username.  
+    * POSTGRES\_PASSWORD: password \- Sets the database password.  
+    * POSTGRES\_DB: smartsentry \- Creates an initial database named smartsentry.  
+* **Redis Service:**  
+  * image: redis:7-alpine \- A lightweight, official Redis image.  
+  * ports: "6379:6379" \- Maps the standard Redis port.
+
+#### **3.2. Backend Application (consumer\_app.py)**
+
+This file contains the configuration for connecting to the services and controlling the ML logic.
+
+* **File Paths:**  
+  * MODEL\_PATH: 'models/final\_rf\_model.pkl' \- The path to the saved, pre-trained RandomForestClassifier model.  
+* **Kafka Configuration:**  
+  * KAFKA\_TOPIC: 'engine\_data' \- The name of the Kafka topic the consumer subscribes to.  
+  * KAFKA\_SERVER: 'localhost:9092' \- The address of the Kafka broker.  
+* **Database Configuration:**  
+  * DB\_NAME: "smartsentry"  
+  * DB\_USER: "user"  
+  * DB\_PASSWORD: "password"  
+  * DB\_HOST: "localhost"  
+  * DB\_PORT: "5432"  
+  * These must exactly match the values in docker-compose.yml.  
+* **Redis Configuration:**  
+  * REDIS\_HOST: 'localhost'  
+  * REDIS\_PORT: 6379  
+  * REDIS\_CHANNEL: 'sentry\_predictions' \- The name of the channel the dashboard listens to.  
+* **ML Logic Configuration:**  
+  * window\_size: 50 \- The number of recent data points to keep in memory for each engine to provide context for the phase classifier.  
+  * stability\_threshold: 0.0019 \- The data-driven threshold used in the rule-based phase classifier to distinguish between STEADY-STATE and TRANSIENT phases.
+  
